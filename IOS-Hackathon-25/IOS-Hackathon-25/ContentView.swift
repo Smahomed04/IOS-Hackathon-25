@@ -2,7 +2,9 @@
 //  ContentView.swift
 //  IOS-Hackathon-25
 //
+//  Created by Tlaitirang Rathete on 26/6/2025.
 //
+
 import SwiftUI
 import SwiftData
 
@@ -13,7 +15,7 @@ struct ContentView: View {
     @State private var numberOfPlayers: Int = 2
     @State private var playerNames: [String] = ["Player 1", "Player 2"]
     @State private var selectedGameType: String = "Coin Flip"
-    @State private var showingGame = false
+    @State private var navigateToGame = false
     
     let gameTypes = ["Coin Flip", "Rock, Paper, Scissors", "Roulette", "Dice", "High Card", "Random"]
     
@@ -144,6 +146,13 @@ struct ContentView: View {
                             .cornerRadius(12)
                             
                             // Start Game Button
+                            NavigationLink(
+                                destination: GameView(players: playerNames, gameType: selectedGameType),
+                                isActive: $navigateToGame
+                            ) {
+                                EmptyView()
+                            }
+                            
                             Button(action: {
                                 startGame()
                             }) {
@@ -202,12 +211,6 @@ struct ContentView: View {
         .onChange(of: numberOfPlayers) { _ in
             updateSelectedGameType()
         }
-        .sheet(isPresented: $showingGame) {
-            GameView(
-                players: playerNames,
-                gameType: selectedGameType
-            )
-        }
     }
     
     private func updatePlayerNames() {
@@ -245,9 +248,9 @@ struct ContentView: View {
             print("Failed to save game: \(error)")
         }
         
-        // Start the game
+        // Start the game - navigate to game screen
         print("Starting \(selectedGameType) with players: \(playerNames)")
-        showingGame = true
+        navigateToGame = true
     }
     
     private func loadPreviousGame(_ player: Player) {
@@ -257,34 +260,44 @@ struct ContentView: View {
     }
 }
 
-// Placeholder GameView - you'll need to implement this
+// GameView that routes to specific games
 struct GameView: View {
     let players: [String]
     let gameType: String
-    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        NavigationView {
-            VStack {
-                Text("Playing \(gameType)")
-                    .font(.largeTitle)
-                    .padding()
-                
-                Text("Players: \(players.joined(separator: ", "))")
-                    .padding()
-                
-                // Add your game logic here
-                
-                Spacer()
-            }
-            .navigationTitle(gameType)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
+        Group {
+            switch gameType {
+            case "Dice":
+                DiceGame(players: players)
+            case "Rock, Paper, Scissors":
+                RPS()
+            default:
+                // Placeholder for other games
+                ZStack {
+                    Image("Bg")
+                        .resizable()
+                        .edgesIgnoringSafeArea(.all)
+                    
+                    VStack {
+                        Text("Playing \(gameType)")
+                            .font(.largeTitle)
+                            .foregroundColor(.white)
+                            .padding()
+                        
+                        Text("Players: \(players.joined(separator: ", "))")
+                            .foregroundColor(.white)
+                            .padding()
+                        
+                        Text("Game not implemented yet")
+                            .foregroundColor(.gray)
+                            .padding()
+                        
+                        Spacer()
                     }
                 }
+                .navigationTitle(gameType)
+                .navigationBarTitleDisplayMode(.inline)
             }
         }
     }
