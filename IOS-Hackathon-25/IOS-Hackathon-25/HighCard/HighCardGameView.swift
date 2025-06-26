@@ -1,37 +1,37 @@
-//
-//  GameView.swift
-//  IOS-Hackathon-25
-//
-//  Created by Sa’d Mahomed on 26/6/2025.
-//
-
 import SwiftUI
 
 // MARK: - Main Game View
 
 struct HighCardGameView: View {
+    let players: [String]
     @StateObject private var gameLogic = GameLogic()
     @State private var showingRoundResult = false
     @State private var buttonScale: CGFloat = 1.0
     @State private var messageOpacity: Double = 1.0
     
+    // Get player names or use defaults
+    private var player1Name: String {
+        players.first ?? "Player 1"
+    }
+    
+    private var player2Name: String {
+        players.count > 1 ? players[1] : "Player 2"
+    }
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // Background gradient
-                LinearGradient(
-                    gradient: Gradient(colors: [.blue.opacity(0.1), .green.opacity(0.1)]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-                .ignoresSafeArea()
+                // Background image (same as ContentView)
+                Image("Bg")
+                    .resizable()
+                    .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 20) {
                     // Title
                     Text("High Card Game")
                         .font(.largeTitle)
                         .fontWeight(.bold)
-                        .foregroundStyle(.primary)
+                        .foregroundColor(.white)
                         .padding(.top)
                     
                     // Game stats
@@ -44,13 +44,13 @@ struct HighCardGameView: View {
                     // Score section
                     HStack(spacing: 50) {
                         ScoreView(
-                            playerName: "You",
+                            playerName: player1Name,
                             score: gameLogic.playerScore,
                             isWinner: gameLogic.gameState == .gameOver && gameLogic.playerScore > gameLogic.computerScore
                         )
                         
                         ScoreView(
-                            playerName: "Computer",
+                            playerName: player2Name,
                             score: gameLogic.computerScore,
                             isWinner: gameLogic.gameState == .gameOver && gameLogic.computerScore > gameLogic.playerScore
                         )
@@ -59,11 +59,11 @@ struct HighCardGameView: View {
                     
                     // Cards section
                     VStack(spacing: 30) {
-                        // Computer card
+                        // Player 1 card
                         VStack {
-                            Text("Player 1's Card")
+                            Text("\(player1Name)'s Card")
                                 .font(.headline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(.white)
                             
                             AnimatedCardView(
                                 card: gameLogic.computerCard,
@@ -81,11 +81,11 @@ struct HighCardGameView: View {
                                 .animation(.easeInOut(duration: 0.5).repeatCount(3), value: showingRoundResult)
                         }
                         
-                        // Player card
+                        // Player 2 card
                         VStack {
-                            Text("Player 2's Card")
+                            Text("\(player2Name)'s Card")
                                 .font(.headline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(.white)
                             
                             AnimatedCardView(
                                 card: gameLogic.playerCard,
@@ -184,6 +184,8 @@ struct HighCardGameView: View {
                 }
             }
         }
+        .navigationTitle("High Card")
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     private var messageColor: Color {
@@ -195,7 +197,7 @@ struct HighCardGameView: View {
         case .tie:
             return .orange
         case .none:
-            return .primary
+            return .white
         }
     }
     
@@ -206,5 +208,5 @@ struct HighCardGameView: View {
 }
 
 #Preview {
-    HighCardGameView()
+    HighCardGameView(players: ["Alice", "Bob"])
 }
