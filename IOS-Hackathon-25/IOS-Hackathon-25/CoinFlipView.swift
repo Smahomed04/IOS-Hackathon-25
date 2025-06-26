@@ -1,5 +1,5 @@
 import SwiftUI
-import ConfettiSwiftUI // Import ConfettiSwiftUI
+//import ConfettiSwiftUI // Import ConfettiSwiftUI
 
 // MARK: - CoinChoice Enum
 // Represents a player's choice: Heads or Tails.
@@ -19,7 +19,7 @@ enum CoinResult: String, CaseIterable, Identifiable {
 
 // MARK: - Player Model
 // Represents a player in the Coin Flip game.
-struct Player: Identifiable {
+struct CoinFlipPlayer: Identifiable {
     let id = UUID()
     var name: String
     var choice: CoinChoice? // Player's chosen side (Heads/Tails)
@@ -49,7 +49,7 @@ struct CoinFlipView: View {
         NavigationView {
             ZStack {
                 // Background: Dark gradient for a game/night mode feel
-                Image("background1") // <- your actual image asset name
+                Image("Bg") // <- your actual image asset name
                     .resizable()
                     .ignoresSafeArea()
 
@@ -127,19 +127,6 @@ struct CoinFlipView: View {
                             .foregroundColor(.green)
                             .background(Color.black.opacity(0.6).cornerRadius(15))
                             .transition(.opacity) // Fade in winner message
-                            .confettiCannon(
-                                trigger: $confettiCounter,
-                                num: 40,
-                                confettis: [
-                                    .text("⭐"),
-                                    .text("🥏"),
-                                    .shape(.circle),
-                                    .shape(.triangle)
-                                ],
-                                rainHeight: 500,
-                                repetitions: 1,
-                                repetitionInterval: 0.0
-                            )
                     }
 
                     Spacer()
