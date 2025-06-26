@@ -20,10 +20,14 @@ struct ContentView: View {
     let gameTypes = ["Coin Flip", "Rock, Paper, Scissors", "Roulette", "Dice", "High Card", "Random"]
     
     var availableGameTypes: [String] {
-        if numberOfPlayers > 5 {
+        if numberOfPlayers > 6 {
             return ["Roulette"]
         } else if numberOfPlayers > 2 {
-            return gameTypes.filter { $0 != "Coin Flip" && $0 != "Rock, Paper, Scissors" }
+            return gameTypes.filter {
+                $0 != "Coin Flip" &&
+                $0 != "Rock, Paper, Scissors" &&
+                $0 != "High Card"
+            }
         } else {
             return gameTypes
         }
@@ -136,7 +140,7 @@ struct ContentView: View {
                                         .font(.caption)
                                         .foregroundColor(.orange)
                                 } else if numberOfPlayers > 2 {
-                                    Text("Coin Flip and Rock, Paper, Scissors disabled for 3+ players")
+                                    Text("Coin Flip and Rock, Paper, Scissors High Card \n disabled for 3+ players")
                                         .font(.caption)
                                         .foregroundColor(.orange)
                                 }
@@ -280,6 +284,8 @@ struct GameView: View {
                 DiceGame(players: players)
             case "Rock, Paper, Scissors":
                 RPS()
+            case "High Card":
+                HighCardGameView(players: players)
             default:
                 // Placeholder for other games
                 ZStack {
@@ -310,7 +316,6 @@ struct GameView: View {
         }
     }
 }
-
 
 #Preview {
     ContentView()
