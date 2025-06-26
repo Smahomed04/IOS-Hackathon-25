@@ -1,7 +1,6 @@
 import SwiftUI
 
 // MARK: - Main Game View
-
 struct HighCardGameView: View {
     let players: [String]
     @StateObject private var gameLogic = GameLogic()
@@ -26,161 +25,162 @@ struct HighCardGameView: View {
                     .resizable()
                     .edgesIgnoringSafeArea(.all)
                 
-                VStack(spacing: 20) {
-                    // Title
-                    Text("High Card Game")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .padding(.top)
-                    
-                    // Game stats
-                    GameStatsView(
-                        cardsRemaining: gameLogic.cardsRemaining,
-                        roundsRemaining: gameLogic.roundsRemaining,
-                        gameProgress: gameLogic.gameProgress
-                    )
-                    
-                    // Score section
-                    HStack(spacing: 50) {
-                        ScoreView(
-                            playerName: player1Name,
-                            score: gameLogic.playerScore,
-                            isWinner: gameLogic.gameState == .gameOver && gameLogic.playerScore > gameLogic.computerScore
+                ScrollView {
+                    VStack(spacing: 20) {
+                        // Title
+                        Text("High Card Game")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .padding(.top)
+                        
+                        // Game stats
+                        GameStatsView(
+                            cardsRemaining: gameLogic.cardsRemaining,
+                            roundsRemaining: gameLogic.roundsRemaining,
+                            gameProgress: gameLogic.gameProgress
                         )
                         
-                        ScoreView(
-                            playerName: player2Name,
-                            score: gameLogic.computerScore,
-                            isWinner: gameLogic.gameState == .gameOver && gameLogic.computerScore > gameLogic.playerScore
-                        )
-                    }
-                    .padding(.vertical)
-                    
-                    // Cards section
-                    VStack(spacing: 30) {
-                        // Player 1 card
-                        VStack {
-                            Text("\(player1Name)'s Card")
-                                .font(.headline)
-                                .foregroundColor(.white)
+                        // Score section
+                        HStack(spacing: 50) {
+                            ScoreView(
+                                playerName: player1Name,
+                                score: gameLogic.playerScore,
+                                isWinner: gameLogic.gameState == .gameOver && gameLogic.playerScore > gameLogic.computerScore
+                            )
                             
-                            AnimatedCardView(
-                                card: gameLogic.computerCard,
-                                isRevealed: gameLogic.gameState == .playing || gameLogic.gameState == .roundResult || gameLogic.gameState == .gameOver
+                            ScoreView(
+                                playerName: player2Name,
+                                score: gameLogic.computerScore,
+                                isWinner: gameLogic.gameState == .gameOver && gameLogic.computerScore > gameLogic.playerScore
                             )
                         }
+                        .padding(.vertical)
                         
-                        // VS indicator
-                        if gameLogic.gameState == .playing || gameLogic.gameState == .roundResult {
-                            Text("VS")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .foregroundColor(.orange)
-                                .scaleEffect(showingRoundResult ? 1.2 : 1.0)
-                                .animation(.easeInOut(duration: 0.5).repeatCount(3), value: showingRoundResult)
-                        }
-                        
-                        // Player 2 card
-                        VStack {
-                            Text("\(player2Name)'s Card")
-                                .font(.headline)
-                                .foregroundColor(.white)
+                        // Cards section
+                        VStack(spacing: 30) {
+                            // Player 1 card
+                            VStack {
+                                Text("\(player1Name)'s Card")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                
+                                AnimatedCardView(
+                                    card: gameLogic.computerCard,
+                                    isRevealed: gameLogic.gameState == .playing || gameLogic.gameState == .roundResult || gameLogic.gameState == .gameOver
+                                )
+                            }
                             
-                            AnimatedCardView(
-                                card: gameLogic.playerCard,
-                                isRevealed: gameLogic.gameState == .playing || gameLogic.gameState == .roundResult || gameLogic.gameState == .gameOver
-                            )
-                        }
-                    }
-                    
-                    Spacer()
-                    
-                    // Game message
-                    Text(gameLogic.gameMessage)
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(messageColor)
-                        .multilineTextAlignment(.center)
-                        .opacity(messageOpacity)
-                        .padding(.horizontal)
-                        .onChange(of: gameLogic.gameMessage) { _, _ in
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                messageOpacity = 0.7
+                            // VS indicator
+                            if gameLogic.gameState == .playing || gameLogic.gameState == .roundResult {
+                                Text("VS")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.orange)
+                                    .scaleEffect(showingRoundResult ? 1.2 : 1.0)
+                                    .animation(.easeInOut(duration: 0.5).repeatCount(3), value: showingRoundResult)
                             }
-                            withAnimation(.easeInOut(duration: 0.3).delay(0.1)) {
-                                messageOpacity = 1.0
+                            
+                            // Player 2 card
+                            VStack {
+                                Text("\(player2Name)'s Card")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                
+                                AnimatedCardView(
+                                    card: gameLogic.playerCard,
+                                    isRevealed: gameLogic.gameState == .playing || gameLogic.gameState == .roundResult || gameLogic.gameState == .gameOver
+                                )
                             }
                         }
-                    
-                    // Action buttons
-                    VStack(spacing: 15) {
-                        // Draw/Next button
-                        if gameLogic.canDrawCards() {
+                        
+                        // Game message
+                        Text(gameLogic.gameMessage)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(messageColor)
+                            .multilineTextAlignment(.center)
+                            .opacity(messageOpacity)
+                            .padding(.horizontal)
+                            .onChange(of: gameLogic.gameMessage) { _, _ in
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    messageOpacity = 0.7
+                                }
+                                withAnimation(.easeInOut(duration: 0.3).delay(0.1)) {
+                                    messageOpacity = 1.0
+                                }
+                            }
+                        
+                        // Action buttons
+                        VStack(spacing: 15) {
+                            // Draw/Next button
+                            if gameLogic.canDrawCards() {
+                                Button(action: {
+                                    impactFeedback()
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                        buttonScale = 0.95
+                                    }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                            buttonScale = 1.0
+                                        }
+                                    }
+                                    
+                                    gameLogic.drawCards()
+                                    showingRoundResult = true
+                                    
+                                    // Reset round result animation after delay
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                        showingRoundResult = false
+                                        gameLogic.resetForNextRound()
+                                    }
+                                }) {
+                                    Text(gameLogic.gameState == .waiting ? "Draw Cards" : "Next Round")
+                                        .font(.title2)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(.white)
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [.blue, .blue.opacity(0.8)]),
+                                                startPoint: .leading,
+                                                endPoint: .trailing
+                                            )
+                                        )
+                                        .cornerRadius(12)
+                                }
+                                .scaleEffect(buttonScale)
+                                .disabled(gameLogic.gameState == .playing)
+                            }
+                            
+                            // New game button
                             Button(action: {
                                 impactFeedback()
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                                    buttonScale = 0.95
-                                }
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                                        buttonScale = 1.0
-                                    }
-                                }
-                                
-                                gameLogic.drawCards()
-                                showingRoundResult = true
-                                
-                                // Reset round result animation after delay
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
+                                    gameLogic.startNewGame()
                                     showingRoundResult = false
-                                    gameLogic.resetForNextRound()
                                 }
                             }) {
-                                Text(gameLogic.gameState == .waiting ? "Draw Cards" : "Next Round")
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
+                                Text("New Game")
+                                    .font(.headline)
                                     .foregroundColor(.white)
                                     .frame(maxWidth: .infinity)
                                     .padding()
                                     .background(
                                         LinearGradient(
-                                            gradient: Gradient(colors: [.blue, .blue.opacity(0.8)]),
+                                            gradient: Gradient(colors: [.green, .green.opacity(0.8)]),
                                             startPoint: .leading,
                                             endPoint: .trailing
                                         )
                                     )
                                     .cornerRadius(12)
                             }
-                            .scaleEffect(buttonScale)
-                            .disabled(gameLogic.gameState == .playing)
                         }
-                        
-                        // New game button
-                        Button(action: {
-                            impactFeedback()
-                            withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
-                                gameLogic.startNewGame()
-                                showingRoundResult = false
-                            }
-                        }) {
-                            Text("New Game")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(
-                                    LinearGradient(
-                                        gradient: Gradient(colors: [.green, .green.opacity(0.8)]),
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                                )
-                                .cornerRadius(12)
-                        }
+                        .padding(.horizontal)
+                        .padding(.bottom)
                     }
-                    .padding(.horizontal)
-                    .padding(.bottom)
+                    .padding()
                 }
             }
         }
