@@ -23,7 +23,7 @@ struct ContentView: View {
         if numberOfPlayers > 5 {
             return ["Roulette"]
         } else if numberOfPlayers > 2 {
-            return gameTypes.filter { $0 != "Coin Flip" && $0 != "Rock, Paper, Scissors" }
+            return gameTypes.filter { $0 != "Coin Flip" && $0 != "Rock, Paper, Scissors" && $0 != "High Card" }
         } else {
             return gameTypes
         }
@@ -136,7 +136,7 @@ struct ContentView: View {
                                         .font(.caption)
                                         .foregroundColor(.orange)
                                 } else if numberOfPlayers > 2 {
-                                    Text("Coin Flip and Rock, Paper, Scissors disabled for 3+ players")
+                                    Text("Coin Flip, Rock Paper Scissors, and High Card disabled for 3+ players")
                                         .font(.caption)
                                         .foregroundColor(.orange)
                                 }
@@ -261,7 +261,7 @@ struct ContentView: View {
 }
 
 // GameView that routes to specific games
-// Updated GameView to include Roulette
+// Updated GameView to include High Card
 struct GameView: View {
     let players: [String]
     let gameType: String
@@ -272,6 +272,8 @@ struct GameView: View {
             case "Coin Flip":
                 CoinFlipView(player1Name: players.first ?? "Player 1",
                            player2Name: players.count > 1 ? players[1] : "Player 2")
+            case "High Card":
+                HighCardGameView(players: players)
             case "Roulette":
                 RouletteWheelView(players: players) { result in
                     print("Roulette winner: \(result)")
@@ -310,7 +312,6 @@ struct GameView: View {
         }
     }
 }
-
 
 #Preview {
     ContentView()
