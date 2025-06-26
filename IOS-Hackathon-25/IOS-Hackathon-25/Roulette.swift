@@ -250,7 +250,7 @@ struct RouletteWheelView: View {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             let finalNeedleAngle = rotation.truncatingRemainder(dividingBy: 360)
-            let angleAtPin = (360 - finalNeedleAngle).truncatingRemainder(dividingBy: 360)
+            let angleAtPin = (270 - finalNeedleAngle).truncatingRemainder(dividingBy: 360)
 
             let result = closestCategory(to: angleAtPin, using: createAngleMap(for: selectedCategories))
             onResult(result)
