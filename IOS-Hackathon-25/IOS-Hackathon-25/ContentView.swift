@@ -261,6 +261,7 @@ struct ContentView: View {
 }
 
 // GameView that routes to specific games
+// Updated GameView to include Roulette
 struct GameView: View {
     let players: [String]
     let gameType: String
@@ -271,6 +272,10 @@ struct GameView: View {
             case "Coin Flip":
                 CoinFlipView(player1Name: players.first ?? "Player 1",
                            player2Name: players.count > 1 ? players[1] : "Player 2")
+            case "Roulette":
+                RouletteWheelView(players: players) { result in
+                    print("Roulette winner: \(result)")
+                }
             case "Dice":
                 DiceGame(players: players)
             case "Rock, Paper, Scissors":
