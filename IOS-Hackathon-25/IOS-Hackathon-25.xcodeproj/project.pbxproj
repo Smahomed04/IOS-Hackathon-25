@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		03115CA92E0D13D000224E49 /* scissorsWins.mov in Resources */ = {isa = PBXBuildFile; fileRef = 03115CA52E0D13D000224E49 /* scissorsWins.mov */; };
+		03115CAA2E0D13D000224E49 /* tie.mov in Resources */ = {isa = PBXBuildFile; fileRef = 03115CA62E0D13D000224E49 /* tie.mov */; };
+		03115CAB2E0D13D000224E49 /* rockWins.mov in Resources */ = {isa = PBXBuildFile; fileRef = 03115CA72E0D13D000224E49 /* rockWins.mov */; };
+		03115CAC2E0D13D000224E49 /* paperWins.mov in Resources */ = {isa = PBXBuildFile; fileRef = 03115CA82E0D13D000224E49 /* paperWins.mov */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F2AED6F12E0CDDB6009C5494 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +31,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03115CA52E0D13D000224E49 /* scissorsWins.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = scissorsWins.mov; path = ../../../Desktop/scissorsWins.mov; sourceTree = "<group>"; };
+		03115CA62E0D13D000224E49 /* tie.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = tie.mov; path = ../../../Desktop/tie.mov; sourceTree = "<group>"; };
+		03115CA72E0D13D000224E49 /* rockWins.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = rockWins.mov; path = ../../../Desktop/rockWins.mov; sourceTree = "<group>"; };
+		03115CA82E0D13D000224E49 /* paperWins.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = paperWins.mov; path = ../../../Desktop/paperWins.mov; sourceTree = "<group>"; };
 		F2AED6E02E0CDDB5009C5494 /* IOS-Hackathon-25.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IOS-Hackathon-25.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2AED6F02E0CDDB6009C5494 /* IOS-Hackathon-25Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "IOS-Hackathon-25Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2AED6FA2E0CDDB6009C5494 /* IOS-Hackathon-25UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "IOS-Hackathon-25UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,6 +81,10 @@
 		F2AED6D72E0CDDB5009C5494 = {
 			isa = PBXGroup;
 			children = (
+				03115CA82E0D13D000224E49 /* paperWins.mov */,
+				03115CA72E0D13D000224E49 /* rockWins.mov */,
+				03115CA52E0D13D000224E49 /* scissorsWins.mov */,
+				03115CA62E0D13D000224E49 /* tie.mov */,
 				F2AED6E22E0CDDB5009C5494 /* IOS-Hackathon-25 */,
 				F2AED6F32E0CDDB6009C5494 /* IOS-Hackathon-25Tests */,
 				F2AED6E12E0CDDB5009C5494 /* Products */,
@@ -203,6 +218,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03115CA92E0D13D000224E49 /* scissorsWins.mov in Resources */,
+				03115CAA2E0D13D000224E49 /* tie.mov in Resources */,
+				03115CAB2E0D13D000224E49 /* rockWins.mov in Resources */,
+				03115CAC2E0D13D000224E49 /* paperWins.mov in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
