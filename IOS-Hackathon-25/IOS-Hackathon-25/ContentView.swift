@@ -268,6 +268,9 @@ struct GameView: View {
     var body: some View {
         Group {
             switch gameType {
+            case "Coin Flip":
+                CoinFlipView(player1Name: players.first ?? "Player 1",
+                           player2Name: players.count > 1 ? players[1] : "Player 2")
             case "Dice":
                 DiceGame(players: players)
             case "Rock, Paper, Scissors":
@@ -302,6 +305,7 @@ struct GameView: View {
         }
     }
 }
+
 
 #Preview {
     ContentView()
