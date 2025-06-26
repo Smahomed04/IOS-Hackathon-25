@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		0355E1FE2E0CF8AB00EC93C1 /* ConfettiSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0355E1FD2E0CF8AB00EC93C1 /* ConfettiSwiftUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F2AED6F12E0CDDB6009C5494 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0355E1FE2E0CF8AB00EC93C1 /* ConfettiSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = "IOS-Hackathon-25";
 			packageProductDependencies = (
+				0355E1FD2E0CF8AB00EC93C1 /* ConfettiSwiftUI */,
 			);
 			productName = "IOS-Hackathon-25";
 			productReference = F2AED6E02E0CDDB5009C5494 /* IOS-Hackathon-25.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = F2AED6D72E0CDDB5009C5494;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				0355E1FC2E0CF7F000EC93C1 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F2AED6E12E0CDDB5009C5494 /* Products */;
 			projectDirPath = "";
@@ -552,6 +561,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0355E1FC2E0CF7F000EC93C1 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/simibac/ConfettiSwiftUI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0355E1FD2E0CF8AB00EC93C1 /* ConfettiSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0355E1FC2E0CF7F000EC93C1 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */;
+			productName = ConfettiSwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F2AED6D82E0CDDB5009C5494 /* Project object */;
 }
