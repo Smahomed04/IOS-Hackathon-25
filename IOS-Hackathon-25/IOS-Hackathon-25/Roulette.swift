@@ -2,17 +2,16 @@ import SwiftUI
 import AVFoundation
 
 struct RouletteWheelView: View {
-    let number: Int
-    
-    
+    let players: [String] // Accept array of player names instead of just a number
     let onResult: (String) -> Void
     
-    @State private var selectedCategories: [String] = [] // Randomly choose 20 options
+    @State private var selectedCategories: [String] = [] // Will use actual player names
     @State private var rotation: Double = 0
     @State private var isSpinning = false
     @State private var player: AVAudioPlayer? // Sound
-    
     @State private var resultText: String = "Tap to spin!"
+    @State private var showWinner = false
+    @State private var winnerName: String = ""
     
     // Wheel
     var wheelSize: CGFloat = 350 // Size
@@ -24,107 +23,205 @@ struct RouletteWheelView: View {
         Color(hex: "#00661a"), // Green
         Color(hex: "#f2ccff")  // Pink
     ]
-    
-    func generatePlayerArray(count: Int) -> [String] {
-        return (1...count).map { "player \($0)" }
-    }
-     
-//    lazy var allCategories: [String] = generatePlayerArray(count: number)
 
     var body: some View {
-        VStack {
-            Text(resultText)
-                .font(.largeTitle)
-                .bold()
+        ZStack {
+            // Background
+            Image("Bg")
+                .resizable()
+                .ignoresSafeArea()
             
-            ZStack {
-                // Rotating Wheel with Spin Button
-                GeometryReader { geometry in
-                    let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 2)
-                    
-                    // Arrow
-                    VStack {
+            VStack(spacing: 20) {
+                Text("Roulette Wheel")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(.top)
+                
+                Text(resultText)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.black.opacity(0.6))
+                    .cornerRadius(12)
+                
+                ZStack {
+                    // Rotating Wheel with Spin Button
+                    GeometryReader { geometry in
+                        let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 2)
                         
-                        Image(systemName: "arrowtriangle.down.fill")
-                            .resizable()
-                            .frame(width: 20, height: 30)
-                            .foregroundColor(Color(hex: "#ff6600"))
-                        Spacer()
-                    }.frame(maxWidth: .infinity)
-                    
-                    // Category segments with borders
-                    ZStack {
-                        ForEach(selectedCategories.indices, id: \.self) { index in
-                            let segmentAngle = 360.0 / Double(selectedCategories.count)
-                            let startAngle = Double(index) * segmentAngle
-                            let endAngle = startAngle + segmentAngle
-                            let midAngle = startAngle + segmentAngle / 2
-                            let angle = Angle(degrees: midAngle - 90)
+                        // Arrow
+                        VStack {
+                            Image(systemName: "arrowtriangle.down.fill")
+                                .resizable()
+                                .frame(width: 20, height: 30)
+                                .foregroundColor(Color(hex: "#ff6600"))
+                            Spacer()
+                        }.frame(maxWidth: .infinity)
+                        
+                        // Category segments with borders
+                        ZStack {
+                            ForEach(selectedCategories.indices, id: \.self) { index in
+                                let segmentAngle = 360.0 / Double(selectedCategories.count)
+                                let startAngle = Double(index) * segmentAngle
+                                let endAngle = startAngle + segmentAngle
+                                let midAngle = startAngle + segmentAngle / 2
+                                let angle = Angle(degrees: midAngle - 90)
 
-                            // Draw segment lines
-                            Path { path in
-                                path.move(to: center)
-                                path.addArc(
-                                    center: center,
-                                    radius: wheelSize / 2,
-                                    startAngle: Angle(degrees: startAngle),
-                                    endAngle: Angle(degrees: endAngle),
-                                    clockwise: false
-                                )
-                                path.closeSubpath()
+                                // Draw segment lines
+                                Path { path in
+                                    path.move(to: center)
+                                    path.addArc(
+                                        center: center,
+                                        radius: wheelSize / 2,
+                                        startAngle: Angle(degrees: startAngle),
+                                        endAngle: Angle(degrees: endAngle),
+                                        clockwise: false
+                                    )
+                                    path.closeSubpath()
+                                }
+                                .fill(colors[index % colors.count].opacity(0.8))
+
+                                // Category labels inside the slice
+                                Text(selectedCategories[index])
+                                    .font(.system(size: getFontSize(), weight: .bold, design: .default))
+                                    .foregroundColor(.white)
+                                    .shadow(color: .black, radius: 1, x: 1, y: 1)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .multilineTextAlignment(.center)
+                                    .rotationEffect(Angle(degrees: midAngle > 90 && midAngle < 270 ? midAngle + 180 : midAngle))
+                                    .position(
+                                        x: center.x + (wheelSize / 3.5) * CGFloat(cos(Angle(degrees: midAngle).radians)),
+                                        y: center.y + (wheelSize / 3.5) * CGFloat(sin(Angle(degrees: midAngle).radians))
+                                    )
                             }
-                            .fill(colors[index % colors.count].opacity(0.8))
 
-                            // Category labels inside the slice
-                            Text(selectedCategories[index])
-                                .font(.system(size: 20, weight: .bold, design: .serif))
-                                .foregroundColor(Color(hex: "#000000"))
-                                .fixedSize(horizontal: true, vertical: false) // 防止文字被截斷
-                                .rotationEffect(angle)
-                                .position(
-                                    x: center.x + (wheelSize / 3) * CGFloat(cos(angle.radians)),
-                                    y: center.y + (wheelSize / 3) * CGFloat(sin(angle.radians))
-                                )
-                        }
+                            // Center SPIN Button
+                            Button(action: {
+                                spinNeedle()
+                            }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color(hex: "#000000"))
+                                        .frame(width: wheelSize / 5, height: wheelSize / 5)
+                                        .scaleEffect(isSpinning ? 0.8 : 1.0)
+                                        .animation(.easeInOut(duration: 0.2), value: isSpinning)
 
-                        // Center SPIN Button
-                        Button(action: {
-                            spinNeedle()
-                        }) {
-                            ZStack {
-                                Circle()
-                                    .fill(Color(hex: "#000000"))
-                                    .frame(width: wheelSize / 5, height: wheelSize / 5)
-                                    .scaleEffect(isSpinning ? 0.8 : 1.0)
-                                    .animation(.easeInOut(duration: 0.2), value: isSpinning)
-
-                                VStack {
-                                    Text("SPIN")
-                                        .font(.system(size: 16, weight: .bold, design: .monospaced))
-                                        .foregroundColor(.white)
+                                    VStack {
+                                        Text("SPIN")
+                                            .font(.system(size: 16, weight: .bold, design: .monospaced))
+                                            .foregroundColor(.white)
+                                    }
                                 }
                             }
+                            .disabled(isSpinning)
                         }
-                        .disabled(isSpinning)
+                        .position(center)
+                        .rotationEffect(.degrees(rotation))
+                        .animation(.easeOut(duration: 3), value: rotation)
                     }
-                    .position(center)
-                    .rotationEffect(.degrees(rotation))
-                    .animation(.easeOut(duration: 3), value: rotation)
+                    .padding(.bottom)
+                    .frame(width: wheelSize + 80, height: wheelSize + 100)
                 }
-                .padding(.bottom)
-                .frame(width: wheelSize + 80, height: wheelSize + 100)
+                
+                // Players list
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Players:")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                    
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 8) {
+                        ForEach(players, id: \.self) { player in
+                            Text(player)
+                                .font(.subheadline)
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Color.blue.opacity(0.6))
+                                .cornerRadius(8)
+                        }
+                    }
+                }
+                .padding()
+                .background(Color.black.opacity(0.4))
+                .cornerRadius(12)
+                .padding(.horizontal)
+                
+                Spacer()
             }
-            .onAppear {
-                selectRandomCategories()
+            
+            // Winner Popup
+            if showWinner {
+                ZStack {
+                    Color.black.opacity(0.7)
+                        .edgesIgnoringSafeArea(.all)
+                    
+                    VStack(spacing: 20) {
+                        Text("🎉 WINNER! 🎉")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .foregroundColor(.yellow)
+                        
+                        Text(winnerName)
+                            .font(.title)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(12)
+                        
+                        Text("Congratulations!")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding(.horizontal)
+                        
+                        Button("Continue") {
+                            showWinner = false
+                        }
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 30)
+                        .padding(.vertical, 10)
+                        .background(Color.green)
+                        .cornerRadius(8)
+                    }
+                    .padding()
+                    .background(Color.black.opacity(0.8))
+                    .cornerRadius(20)
+                    .shadow(color: .yellow, radius: 20)
+                }
+                .scaleEffect(showWinner ? 1.0 : 0.1)
+                .animation(.spring(response: 0.5, dampingFraction: 0.6), value: showWinner)
             }
         }
-        
+        .onAppear {
+            setupCategories()
+        }
+        .navigationTitle("Roulette")
+        .navigationBarTitleDisplayMode(.inline)
     }
     
+    // Setup categories using actual player names
+    private func setupCategories() {
+        selectedCategories = players
+        resultText = "Ready to spin! \(players.count) players"
+    }
     
-    // Randomly choose 20 options
-    private func selectRandomCategories() {
-        selectedCategories = Array(generatePlayerArray(count: number).shuffled().prefix(20))
+    // Adjust font size based on number of players
+    private func getFontSize() -> CGFloat {
+        switch players.count {
+        case 1...3:
+            return 16
+        case 4...6:
+            return 14
+        case 7...9:
+            return 12
+        case 10...12:
+            return 10
+        default:
+            return 8
+        }
     }
     
     private func playSpinSound() {
@@ -157,8 +254,14 @@ struct RouletteWheelView: View {
 
             let result = closestCategory(to: angleAtPin, using: createAngleMap(for: selectedCategories))
             onResult(result)
+            winnerName = result
             resultText = "The winner is \(result)!"
             isSpinning = false
+            
+            // Show winner popup after a brief delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                showWinner = true
+            }
         }
     }
 
@@ -182,9 +285,10 @@ struct RouletteWheelView: View {
     }
 }
 
+// REMOVED: Color extension is now in separate file
+
 #Preview {
-    RouletteWheelView(number: 5) { result in
+    RouletteWheelView(players: ["Alice", "Bob", "Charlie", "Diana", "Eve"]) { result in
         print("Selected: \(result)")
     }
 }
-
