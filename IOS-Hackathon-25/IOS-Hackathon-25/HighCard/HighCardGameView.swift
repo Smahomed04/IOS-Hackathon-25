@@ -9,7 +9,7 @@ import SwiftUI
 
 // MARK: - Main Game View
 
-struct GameView: View {
+struct HighCardGameView: View {
     @StateObject private var gameLogic = GameLogic()
     @State private var showingRoundResult = false
     @State private var buttonScale: CGFloat = 1.0
@@ -206,5 +206,5 @@ struct GameView: View {
 }
 
 #Preview {
-    GameView()
+    HighCardGameView()
 }
