@@ -2,7 +2,6 @@
 //  ContentView.swift
 //  IOS-Hackathon-25
 //
-//  Created by Tlaitirang Rathete on 26/6/2025.
 //
 
 import SwiftUI
